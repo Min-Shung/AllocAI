@@ -9,32 +9,51 @@
 
 ## 🔧 核心功能
 
-- ✂️ **任務自動拆解**：根據會議紀錄自動產生 Story-Task-Item 階層式結構
-- 🧮 **任務屬性評估**：計算風險、難度與預估工時
-- 🧑‍🤝‍🧑 **人力資源配對**：根據員工專長與性格類型執行任務分配
-- 📊 **可視化任務看板**：顯示員工資訊、任務拆分、任務評估與任務分配結果
-- 🔁 **AI 與手動雙模式調整**：管理者可即時進行任務與人員的再分配
+- ✂️ **任務自動拆解**：根據會議紀錄將專案拆解為 Story → Task → Item 階層式結構
+- 🧮 **任務屬性評估**：針對每個Task與Item計算風險指數RPN、難度係數與預估工時
+- 🧑‍🤝‍🧑 **人力資源配對**：根據員工特徵資料與任務屬性執行任務分配
+- 📊 **視覺化任務看板**：顯示員工資訊、任務拆分、任務評估與任務分配結果
+- 🔁 **AI 與手動雙模式調整**：管理者可進行任務與人員的再分配
 
-## 🧠 技術創新
+## 📺 系統介面
 
-- 使用 **Azure OpenAI GPT 模型** 解析自然語言會議紀錄
-- 透過語意比對與特徵資料分析，實現智能化人員配對
-- 支援 AI 回饋再訓練與動態任務重構
+**建立專案頁面**
 
-## 🏗 系統架構
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.07.png)
 
-採用經典 **MVC 架構**：
+**輸入員工資料頁面**
 
-- **Frontend (View)**：React，負責資料輸入與視覺化看板
-- **Backend (Controller)**：Node.js + Express.js，控制模組流程
-- **AI 引擎與資料儲存 (Model)**：整合 Azure OpenAI 與 MongoDB
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.15.png)
 
-```
-📁 frontend   - React 前端界面 (含 src/App.js 與 components 資料夾)
-📁 backend    - 僅包含 server.js 的 Node.js API 啟動點
-📁 database   - MongoDB 資料結構設計
-📁 ai-engine  - 任務拆解 / 分配 / 調整模組 (OpenAI API)
-```
+**看板頁面**  
+-   員工資訊
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-05-30%20下午6.25.30.png)
+
+-   專案資訊
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.36.png)
+
+-   任務拆分
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.49.png)
+
+-   任務評估
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.55.png)
+
+-   任務分配
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.08.32.png)
+
+**調整頁面**  
+-   手動調整
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.29.24.png)
+
+-   AI調整
+
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.29.07.png)
 
 ## 💻 使用技術
 
@@ -44,6 +63,14 @@
 - Third-Party Services: Azure OpenAI API (GPT)
 
 ## 🚀 專案啟動方式
+
+### 📦 系統需求
+
+- Node.js 16.15.0 以上
+- React + Vite
+- MongoDB
+- Azure OpenAI API 金鑰與部署
+- Notion API（選用）
 
 1. 安裝前後端依賴：
    ```bash
@@ -74,43 +101,12 @@
 
 4. 開啟瀏覽器進入 `http://localhost:3000` 進行操作
 
-## 📺 系統介面
+## 🌐 環境變數說明
 
-**建立新專案頁面**
+| 變數名稱         | 說明                                                                                      |
+|----------------------|--------------------------------------------------------------------------------------------------|
+| AZURE_OPENAI_ENDPOINT | Azure OpenAI 資源端點 (例如： `https://your-resource-name.openai.azure.com/`)               |
+| API_KEY               | Azure OpenAI API 金鑰                      |
+| DEPLOYMENT_NAME       | Azure 上部署模型的名稱 (例如： `gpt-keyword-v1`)                        |
+| API_VERSION           | API 使用版本（例如：2024-02-01）                                       |
 
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.07.png)
-
-**輸入員工特徵資料**
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.15.png)
-
-**員工資訊與專案資訊**  
--   員工資訊
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-05-30%20下午6.25.30.png)
-
--   專案資訊
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.36.png)
-
-**任務拆解與評估結果一覽**  
--   任務拆分結果
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.49.png)
-
--   任務評估結果
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.55.png)
-
-**任務分配結果看板**
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.08.32.png)
-
-**手動與 AI 分配調整功能**  
--   手動調整
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.29.24.png)
-
--   AI調整
-
-![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.29.07.png)
