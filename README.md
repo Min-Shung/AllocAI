@@ -77,7 +77,12 @@
 ## 📺 系統介面
 
 - 建立新專案頁面
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.07.png)
 - 輸入員工特徵資料
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-06-01%20上午12.28.15.png)
+- 看板介面員工資訊一覽
+![image](https://github.com/Min-Shung/AllocAI/blob/main/README_pic/截圖%202025-05-30%20下午6.25.30.png)
+
 - 任務拆解與評估結果一覽
 - 任務分配結果看板
 - 手動與 AI 分配調整功能
