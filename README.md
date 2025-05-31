@@ -42,7 +42,7 @@
 - Frontend: React
 - Backend: Node.js + Express.js
 - Database: MongoDB
-- AI: Azure OpenAI (GPT)
+- Third-Party Services: Azure OpenAI API (GPT)
 
 ## 🚀 專案啟動方式
 
@@ -68,7 +68,7 @@
 
    # 後端
    cd backend
-   node server
+   node server.js
    ```
 
 4. 開啟瀏覽器進入 `http://localhost:3000` 進行操作
