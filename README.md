@@ -67,10 +67,9 @@
 ### 📦 系統需求
 
 - Node.js 16.15.0 以上
-- React + Vite
+- React 
 - MongoDB
 - Azure OpenAI API 金鑰與部署
-- Notion API（選用）
 
 1. 安裝前後端依賴：
    ```bash
