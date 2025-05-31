@@ -1,6 +1,8 @@
 
 ## AllocAI--智慧任務拆解與人力資源分配系統
+
 <img src="https://github.com/Min-Shung/AllocAI/blob/main/README_pic/logo.png" width="10%" height="10%">
+
 > 不用再手動拆分任務，交給AllocAI自動分工。把時間，留給真正的創造。
 
 ## 📌 專案簡介
