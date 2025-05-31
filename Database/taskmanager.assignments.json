@@ -1,0 +1,101 @@
+[{
+  "_id": {
+    "$oid": "6836c877f6bcdf7ab135cc2e"
+  },
+  "projectName": "智慧城市交通資訊整合平台",
+  "assignments": [
+    {
+      "employee": "Alice",
+      "tasks": [
+        "技術架構與開發-前端開發"
+      ],
+      "items": [
+        "使用 Node.js + Express 架設 API Gateway"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc2f"
+      }
+    },
+    {
+      "employee": "Bob",
+      "tasks": [
+        "技術架構與開發-後端開發"
+      ],
+      "items": [
+        "獲取即時路況資訊"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc30"
+      }
+    },
+    {
+      "employee": "Charlie",
+      "tasks": [
+        "其他系統功能-UI 設計"
+      ],
+      "items": [
+        "設計高齡者友善介面",
+        "設計視障友善介面"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc31"
+      }
+    },
+    {
+      "employee": "Diana",
+      "tasks": [
+        "技術架構與開發-資料處理設計"
+      ],
+      "items": [
+        "設計資料爬蟲",
+        "設計資料排程"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc32"
+      }
+    },
+    {
+      "employee": "Ethan",
+      "tasks": [
+        "技術架構與開發-地圖服務整合"
+      ],
+      "items": [
+        "選擇並整合 Google Maps SDK 或 Mapbox"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc33"
+      }
+    },
+    {
+      "employee": "Fiona",
+      "tasks": [
+        "整合交通、天氣與公共運輸資訊-整合公共運輸 API"
+      ],
+      "items": [
+        "使用 React Native 開發 Android/iOS 應用程式",
+        "獲取公車資訊",
+        "獲取捷運資訊",
+        "獲取轉乘資訊"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc34"
+      }
+    },
+    {
+      "employee": "George",
+      "tasks": [
+        "權限與資料合作-交通局資料授權洽談"
+      ],
+      "items": [
+        "與台北市交通局洽談資料授權"
+      ],
+      "_id": {
+        "$oid": "6836c877f6bcdf7ab135cc35"
+      }
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-05-28T08:25:27.504Z"
+  },
+  "__v": 0
+}]

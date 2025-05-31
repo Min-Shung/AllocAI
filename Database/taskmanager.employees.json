@@ -1,0 +1,93 @@
+[{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f46"
+  },
+  "name": "Alice",
+  "mbti": "INTJ",
+  "skills": [
+    "React",
+    "Node.js",
+    "AI"
+  ],
+  "role": "frontend"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f47"
+  },
+  "name": "Bob",
+  "mbti": "ISTP",
+  "skills": [
+    "Java",
+    "Spring",
+    "SQL"
+  ],
+  "role": "backend"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f48"
+  },
+  "name": "Charlie",
+  "mbti": "ENFP",
+  "skills": [
+    "UX",
+    "Figma",
+    "HTML",
+    "CSS"
+  ],
+  "role": "designer"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f49"
+  },
+  "name": "Diana",
+  "mbti": "INFJ",
+  "skills": [
+    "Python",
+    "Machine Learning",
+    "Data Analysis"
+  ],
+  "role": "data scientist"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f4a"
+  },
+  "name": "Ethan",
+  "mbti": "ENTP",
+  "skills": [
+    "DevOps",
+    "AWS",
+    "Docker",
+    "Kubernetes"
+  ],
+  "role": "devops"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f4b"
+  },
+  "name": "Fiona",
+  "mbti": "ISFJ",
+  "skills": [
+    "React Native",
+    "JavaScript",
+    "UX"
+  ],
+  "role": "mobile"
+},
+{
+  "_id": {
+    "$oid": "6835aa8eda6267a159584f4c"
+  },
+  "name": "George",
+  "mbti": "ESTJ",
+  "skills": [
+    "Project Management",
+    "Agile",
+    "Scrum"
+  ],
+  "role": "project manager"
+}]

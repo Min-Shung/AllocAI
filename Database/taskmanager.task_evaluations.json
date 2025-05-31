@@ -1,0 +1,859 @@
+[{
+  "_id": {
+    "$oid": "6836c872f6bcdf7ab135cbfb"
+  },
+  "description": "專案名稱：智慧城市交通資訊整合平台\n目標：建立一個整合即時交通、天氣與公共運輸資訊的行動應用程式，提供民眾即時查詢與路線規劃服務。\n時程：2025-05-16 ~ 2025-06-13\n會議紀錄：\n會議時間：2025/05/15參與人員：產品經理 Alice、前端工程師 Bob、後端工程師 Carol、資料工程師 David、系統架構師 Eve討論重點：1. 系統需支援整合來自交通局、氣象局與公共運輸單位的 API。   - 交通資訊包括即時路況、事故回報。   - 氣象資訊須支援不同區域的即時天氣與警報。   - 公共運輸包含公車、捷運、轉乘資訊。2. 技術需求：   - 前端預計使用 React Native，支援 Android/iOS。   - 後端以 Node.js + Express 架設 API Gateway。   - 地圖服務採用 Google Maps SDK 或 Mapbox。   - 資料處理部分須設計資料爬蟲與排程，定時抓取資料。3. 權限與資料合作：   - 需與台北市交通局洽談資料授權。   - 氣象局資料部分可先使用開放資料，後續爭取更細部資料。4. 使用者功能：   - 查詢即時交通路況與預估到達時間。   - 查看當前區域天氣與未來兩小時預報。   - 規劃從起點到目的地的多模態交通路線（走路 + 公車 + 捷運）。5. 其他：   - 系統需具備推播功能（ex: 事故、天氣警報）。   - UI 設計需符合高齡者與視障友善標準。下一步：- 各組需於下週四（5/22）前提交初步設計草圖與技術可行性報告。- 專案初步分三個模組開發：資料整合、地圖與前端 UI、用戶功能。",
+  "stories": [
+    {
+      "name": "整合交通、天氣與公共運輸資訊",
+      "tasks": [
+        {
+          "name": "整合交通局 API",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "整合交通局 API 涉及多個外部系統的依賴，可能會遇到 API 變更、資料不一致或授權問題，這些都會影響項目的進度和穩定性。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "需要處理多個 API 的整合，確保資料的即時性和準確性，並且需要設計一個穩定的資料抓取和更新機制，技術複雜度較高。"
+            },
+            "story_point": {
+              "number": 20,
+              "reason": "考慮到需要進行 API 研究、資料格式轉換、錯誤處理和測試，預計需要 10 人天的工作量，故估算為 20 點。"
+            },
+            "updated_at": "2025-05-28T08:06:58.231Z"
+          },
+          "items": [
+            {
+              "name": "獲取即時路況資訊",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "即時路況資訊的獲取依賴於多個外部數據源，可能會受到數據源不穩定或API變更的影響，這些變數增加了風險。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要整合多個API和數據源，並確保數據的即時性和準確性，技術上涉及數據處理和網絡通信的複雜性。"
+                },
+                "story_point": {
+                  "number": 8,
+                  "reason": "考慮到需要調查和集成多個API，進行數據處理和測試，預計需要4人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:07:00.243Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cbfe"
+              }
+            },
+            {
+              "name": "獲取事故回報資訊",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "事故回報資訊可能涉及敏感數據，存在數據洩露風險；此外，數據的準確性和完整性可能影響決策。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要處理數據的收集和分析，可能需要與多個系統接口，但技術複雜度相對較低。"
+                },
+                "story_point": {
+                  "number": 5,
+                  "reason": "假設需要設計一個系統來自動收集和分析事故回報資訊，預計需要5個Story Points來完成。"
+                },
+                "updated_at": "2025-05-28T08:07:02.643Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cbff"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cbfd"
+          }
+        },
+        {
+          "name": "整合氣象局 API",
+          "metrics": null,
+          "items": [
+            {
+              "name": "獲取不同區域的即時天氣",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "依賴第三方API的穩定性和網絡連接可能影響數據獲取的可靠性。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要整合API並處理不同格式的數據，但不涉及複雜的算法或大量資源。"
+                },
+                "story_point": {
+                  "number": 5,
+                  "reason": "需要設計API調用、處理數據並顯示結果，預計需要2.5人天完成。"
+                },
+                "updated_at": "2025-05-28T08:20:45.583Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc01"
+              }
+            },
+            {
+              "name": "獲取天氣警報",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "天氣警報數據通常由可靠的第三方提供，可能性和影響力較低，但需要考慮API的可用性和數據更新頻率。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要調用外部API並解析數據，涉及到的技術複雜度不高，但需要處理API的響應和錯誤。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "假設需要調研API、集成並測試，預計需要1.5人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:20:48.460Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc02"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc00"
+          }
+        },
+        {
+          "name": "整合公共運輸 API",
+          "metrics": null,
+          "items": [
+            {
+              "name": "獲取公車資訊",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "公車資訊通常由公共交通部門提供，數據來源穩定，但可能會有API變更或數據延遲的風險。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要調用外部API，解析數據並顯示，但這是常見的開發任務，技術複雜度較低。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "假設需要調研API、開發數據獲取模塊和顯示界面，預計需要1.5人天。"
+                },
+                "updated_at": "2025-05-28T08:21:15.276Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc04"
+              }
+            },
+            {
+              "name": "獲取捷運資訊",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "捷運資訊通常是穩定且可預測的，但可能會因為數據來源變更或API更新而出現風險。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要處理API調用和數據解析，但這些技術挑戰通常是可管理的。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "假設需要開發一個簡單的應用來獲取和顯示捷運資訊，估計需要1.5人天來完成。"
+                },
+                "updated_at": "2025-05-28T08:21:20.440Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc05"
+              }
+            },
+            {
+              "name": "獲取轉乘資訊",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "轉乘資訊通常是公開且穩定的，但可能會因交通狀況或系統更新而有所變動。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要整合多個交通系統的API，並確保數據的準確性和及時性。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "需要分析不同交通系統的資料格式，開發接口以獲取並顯示轉乘資訊，預估需要3個Story Points。"
+                },
+                "updated_at": "2025-05-28T08:21:22.601Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc06"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc03"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cbfc"
+      }
+    },
+    {
+      "name": "技術架構與開發",
+      "tasks": [
+        {
+          "name": "前端開發",
+          "metrics": null,
+          "items": [
+            {
+              "name": "使用 React Native 開發 Android/iOS 應用程式",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "React Native is a mature framework, but there are risks related to platform-specific issues and third-party library compatibility which can affect both Android and iOS."
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "The complexity arises from ensuring cross-platform compatibility, managing native modules, and optimizing performance for both Android and iOS devices."
+                },
+                "story_point": {
+                  "number": 40,
+                  "reason": "Developing a full-featured app with React Native involves setting up the development environment, designing UI/UX, implementing features, testing on multiple devices, and debugging, which is estimated to take about 20 person-days."
+                },
+                "updated_at": "2025-05-28T08:22:01.011Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc09"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc08"
+          }
+        },
+        {
+          "name": "後端開發",
+          "metrics": null,
+          "items": [
+            {
+              "name": "使用 Node.js + Express 架設 API Gateway",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "The risk is moderate due to potential security vulnerabilities, integration challenges with existing systems, and the need for proper authentication and authorization mechanisms."
+                },
+                "difficulty": {
+                  "number": 3,
+                  "reason": "The difficulty is moderate as it involves setting up routing, middleware, and possibly integrating with various microservices. It requires knowledge of Node.js, Express, and understanding of API Gateway patterns."
+                },
+                "story_point": {
+                  "number": 8,
+                  "reason": "The task involves designing the architecture, implementing the gateway, testing, and deploying. Assuming a small team, this could take approximately 4 person-days, hence 8 story points."
+                },
+                "updated_at": "2025-05-28T08:22:22.576Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc0b"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc0a"
+          }
+        },
+        {
+          "name": "地圖服務整合",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "地圖服務整合涉及第三方 SDK 的使用，如 Google Maps SDK 或 Mapbox，這些服務的 API 可能會有變更風險。此外，地圖數據的準確性和更新頻率也可能影響應用的可靠性。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "地圖服務整合需要處理多平台的兼容性問題（Android/iOS），並確保與其他模組（如交通、天氣資訊）的數據同步。技術上需要熟悉地圖 SDK 的使用，並處理地圖渲染性能和用戶交互設計挑戰。"
+            },
+            "story_point": {
+              "number": 20,
+              "reason": "地圖服務整合涉及多個步驟，包括選擇合適的 SDK、開發地圖顯示功能、整合交通和天氣數據、測試多平台兼容性等。預估需要10人天的工作量，故為20個故事點。"
+            },
+            "updated_at": "2025-05-28T08:22:27.120Z"
+          },
+          "items": [
+            {
+              "name": "選擇並整合 Google Maps SDK 或 Mapbox",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "整合第三方SDK可能會遇到API變更或版本更新的風險，此外，選擇不當可能導致性能問題或不符合需求的情況。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要考慮技術複雜度，包括API學習曲線、地圖渲染性能、兼容性問題，以及可能的自定義需求。"
+                },
+                "story_point": {
+                  "number": 10,
+                  "reason": "估算包括研究和選擇合適的SDK（3點），集成和初步測試（4點），以及處理可能的兼容性或性能問題（3點）。"
+                },
+                "updated_at": "2025-05-28T08:22:29.182Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc0d"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc0c"
+          }
+        },
+        {
+          "name": "資料處理設計",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "資料處理涉及多個外部API的整合，這些API的穩定性和變更可能影響系統運行。此外，資料授權和合作的進展也可能帶來風險。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "需要設計一個高效的資料爬蟲和排程系統，確保即時性和準確性，並處理不同格式的資料。技術上需要處理大數據和高頻率的資料更新，這對系統的性能和穩定性是挑戰。"
+            },
+            "story_point": {
+              "number": 20,
+              "reason": "考慮到需要設計和實施資料爬蟲、API整合、資料清洗和排程系統，這是一個相對複雜的任務，預計需要10個人天的工作量。"
+            },
+            "updated_at": "2025-05-28T08:22:50.969Z"
+          },
+          "items": [
+            {
+              "name": "設計資料爬蟲",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "資料爬蟲可能面臨網站反爬措施、法律合規風險以及數據不穩定性。這些風險的影響力中等，且可檢測性取決於網站的反爬策略。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "技術複雜度高，需考慮網頁結構解析、動態內容加載、IP封鎖等問題，並可能需要多種技術資源如代理伺服器、分散式系統等。"
+                },
+                "story_point": {
+                  "number": 10,
+                  "reason": "估算需要5人天，考慮到設計、開發、測試和調整的時間，特別是需要處理不同網站的特性和反爬措施。"
+                },
+                "updated_at": "2025-05-28T08:22:53.997Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc0f"
+              }
+            },
+            {
+              "name": "設計資料排程",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "資料排程涉及多個系統和數據源，可能出現數據不一致或延遲的風險，且檢測困難。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要考慮多個系統的整合和數據流動，技術複雜度高，並且需要專業的數據工程知識。"
+                },
+                "story_point": {
+                  "number": 20,
+                  "reason": "設計資料排程需要詳細的需求分析、系統設計和測試，預計需要10個人天完成。"
+                },
+                "updated_at": "2025-05-28T08:22:57.264Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc10"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc0e"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cc07"
+      }
+    },
+    {
+      "name": "權限與資料合作",
+      "tasks": [
+        {
+          "name": "交通局資料授權洽談",
+          "metrics": {
+            "risk": {
+              "number": 4,
+              "reason": "資料授權洽談涉及多方溝通與法律合約，可能因政策變動或溝通不暢而延誤，影響整體專案進度。"
+            },
+            "difficulty": {
+              "number": 3,
+              "reason": "需要與政府機構進行多次溝通，並可能涉及法律條款的理解與談判，需具備一定的法律知識和溝通技巧。"
+            },
+            "story_point": {
+              "number": 8,
+              "reason": "預計需要多次會議與交通局進行洽談，並準備相關文件與合約，整個過程可能需要4人天的工作量。"
+            },
+            "updated_at": "2025-05-28T08:23:09.628Z"
+          },
+          "items": [
+            {
+              "name": "與台北市交通局洽談資料授權",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "資料授權涉及法律和政策，可能存在授權不成功或延遲的風險。影響力中等，可檢測性取決於洽談過程的透明度。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要與政府機構進行多次溝通，可能需要法律和政策專家的介入，資源需求高且依賴關係複雜。"
+                },
+                "story_point": {
+                  "number": 8,
+                  "reason": "洽談過程可能需要多次會議和文件準備，預計需要4人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:23:12.809Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc13"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc12"
+          }
+        },
+        {
+          "name": "氣象局資料使用",
+          "metrics": null,
+          "items": [
+            {
+              "name": "使用開放資料",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "開放資料通常是公開可用的，風險主要在於資料的準確性和完整性，這些資料的更新頻率和來源可靠性可能影響項目。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術上需要處理資料的格式轉換和清理，可能需要一些API的調用和資料庫的操作，但整體技術難度不高。"
+                },
+                "story_point": {
+                  "number": 5,
+                  "reason": "假設需要整合多個開放資料源，進行資料清理和格式轉換，預計需要2.5人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:23:34.360Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc15"
+              }
+            },
+            {
+              "name": "爭取更細部資料",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "獲取更細部資料可能涉及數據隱私問題，數據來源的可靠性和合法性需要確認，且可能需要處理大量數據，增加了出錯的風險。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要技術上處理數據的能力，可能需要與多個數據源進行整合，並確保數據的準確性和一致性，這需要較高的技術複雜度和資源投入。"
+                },
+                "story_point": {
+                  "number": 8,
+                  "reason": "假設需要進行數據收集、清理、整合和驗證，並且需要與多方協調和溝通，估算需要4人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:23:36.652Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc16"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc14"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cc11"
+      }
+    },
+    {
+      "name": "用戶功能開發",
+      "tasks": [
+        {
+          "name": "即時交通查詢",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "整合多個外部API（交通局、氣象局、公共運輸）存在數據不一致、API變更或中斷的風險，且推播功能需確保即時性和準確性。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "需處理多個API的整合與同步，確保資料的即時性和準確性，並且需要設計友好的UI/UX以滿足高齡者與視障者的需求。"
+            },
+            "story_point": {
+              "number": 20,
+              "reason": "考慮到需要開發即時交通查詢功能，包括API整合、資料同步、推播功能和UI設計，預計需要10個人天的工作量。"
+            },
+            "updated_at": "2025-05-28T08:23:38.991Z"
+          },
+          "items": [
+            {
+              "name": "查詢即時交通路況",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "即時交通路況查詢依賴外部API的穩定性和準確性，可能會受到網絡波動和API變更的影響。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要整合多個數據源並進行實時更新，技術上需要處理高頻率的數據刷新和地理信息系統的複雜性。"
+                },
+                "story_point": {
+                  "number": 10,
+                  "reason": "需要開發API整合、數據處理和前端展示功能，並進行多次測試和優化以確保系統穩定性。"
+                },
+                "updated_at": "2025-05-28T08:23:41.495Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc19"
+              }
+            },
+            {
+              "name": "預估到達時間",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "預估到達時間的風險主要來自於外部因素如交通狀況和天氣變化，這些因素的影響力中等且可檢測性較高。"
+                },
+                "difficulty": {
+                  "number": 1,
+                  "reason": "技術上不複雜，主要依賴於現有的地圖和交通數據，資源需求低。"
+                },
+                "story_point": {
+                  "number": 1,
+                  "reason": "這是一個簡單的計算任務，基於現有數據進行估算，預計需要0.5人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:23:43.414Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc1a"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc18"
+          }
+        },
+        {
+          "name": "天氣查詢",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "整合即時天氣資訊需要依賴外部API，可能面臨API變更或中斷的風險，且需確保資料的準確性與即時性。"
+            },
+            "difficulty": {
+              "number": 3,
+              "reason": "需處理多來源的天氣數據，並確保資料的準確性和即時性，還需考慮UI設計的高齡者與視障友善標準。"
+            },
+            "story_point": {
+              "number": 8,
+              "reason": "估計需要4人天，考慮到API整合、資料處理、UI設計與測試。"
+            },
+            "updated_at": "2025-05-28T08:23:46.221Z"
+          },
+          "items": [
+            {
+              "name": "查看當前區域天氣",
+              "metrics": {
+                "risk": {
+                  "number": 1,
+                  "reason": "查看當前區域天氣的風險很低，因為這是常見且成熟的技術，數據來源通常可靠，且容易檢測錯誤。"
+                },
+                "difficulty": {
+                  "number": 1,
+                  "reason": "技術複雜度低，主要依賴於調用現有的天氣API，資源需求少，無需複雜的依賴關係。"
+                },
+                "story_point": {
+                  "number": 2,
+                  "reason": "假設需要集成一個現有的天氣API，考慮到API調用、數據解析和顯示，預計需要1人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:23:49.103Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc1c"
+              }
+            },
+            {
+              "name": "查看未來兩小時預報",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "天氣預報數據通常是可靠的，但可能會受到突發天氣變化的影響。"
+                },
+                "difficulty": {
+                  "number": 1,
+                  "reason": "技術上只需調用天氣API並解析數據，資源需求低，依賴關係少。"
+                },
+                "story_point": {
+                  "number": 1,
+                  "reason": "調用API並顯示數據的任務相對簡單，預計需要0.5人天完成。"
+                },
+                "updated_at": "2025-05-28T08:23:50.981Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc1d"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc1b"
+          }
+        },
+        {
+          "name": "多模態交通路線規劃",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "整合多種交通模式的路線規劃涉及多個外部API的穩定性和數據一致性問題，且需要處理即時數據，可能會有延遲或不準確的風險。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "需要處理多種交通模式的數據整合和計算，涉及複雜的算法和地圖服務的深度應用，並且需要考慮不同交通模式之間的轉乘邏輯。"
+            },
+            "story_point": {
+              "number": 20,
+              "reason": "考慮到需要開發和測試多模態路線規劃功能，包括API整合、算法設計、UI/UX設計和用戶測試，預計需要10人天的工作量。"
+            },
+            "updated_at": "2025-05-28T08:23:53.462Z"
+          },
+          "items": [
+            {
+              "name": "規劃走路 + 公車 + 捷運路線",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "交通工具的運行時間和路線可能會有變動，影響整體行程，但通常能夠提前獲知並調整。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "需要整合多種交通工具的時間表和路線資訊，可能需要使用交通應用程式或網站來協助規劃。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "估算需要1.5人天，包含收集交通資訊、制定路線計劃以及考慮備選方案的時間。"
+                },
+                "updated_at": "2025-05-28T08:23:55.002Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc1f"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc1e"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cc17"
+      }
+    },
+    {
+      "name": "其他系統功能",
+      "tasks": [
+        {
+          "name": "推播功能開發",
+          "metrics": null,
+          "items": [
+            {
+              "name": "實現事故推播",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "事故推播涉及即時數據處理和傳輸，可能會受到網絡延遲、數據準確性和系統穩定性的影響。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要整合多個系統以獲取事故數據，並確保推播系統的即時性和可靠性，技術上存在一定的複雜性。"
+                },
+                "story_point": {
+                  "number": 20,
+                  "reason": "此任務需要設計和開發多個模組，包括數據收集、處理和推播，預計需要10人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:24:20.991Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc22"
+              }
+            },
+            {
+              "name": "實現天氣警報推播",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "天氣數據的準確性和即時性可能會影響警報的有效性，此外，推播系統的穩定性和用戶接收的可靠性也存在風險。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "需要整合多個數據來源，實現實時數據處理和推送，並確保系統的高可用性和擴展性。"
+                },
+                "story_point": {
+                  "number": 20,
+                  "reason": "涉及數據收集、處理、推送功能的開發和測試，並需要考慮用戶界面和用戶體驗設計。"
+                },
+                "updated_at": "2025-05-28T08:24:23.535Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc23"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc21"
+          }
+        },
+        {
+          "name": "UI 設計",
+          "metrics": null,
+          "items": [
+            {
+              "name": "設計高齡者友善介面",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "高齡者友善介面需要考慮多樣化的使用者需求，可能導致設計不符合所有人的期望。此外，需求可能隨著時間改變，影響持續性。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "技術上需要考慮可用性測試、視覺設計、交互設計等多方面的挑戰，並且需要整合不同的技術資源以確保介面的可用性和易用性。"
+                },
+                "story_point": {
+                  "number": 20,
+                  "reason": "設計高齡者友善介面涉及需求分析、設計迭代和可用性測試等多個階段，每個階段都需要投入大量的時間和精力。"
+                },
+                "updated_at": "2025-05-28T08:24:45.075Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc25"
+              }
+            },
+            {
+              "name": "設計視障友善介面",
+              "metrics": {
+                "risk": {
+                  "number": 3,
+                  "reason": "可能性中等，需考慮視障用戶的特殊需求，影響力高但可檢測性中等，需進行用戶測試以確保可用性。"
+                },
+                "difficulty": {
+                  "number": 4,
+                  "reason": "技術複雜度高，需整合無障礙技術，資源需求包括設計師和開發者，依賴關係涉及無障礙標準。"
+                },
+                "story_point": {
+                  "number": 20,
+                  "reason": "設計和開發需要多次迭代和用戶測試，預計需要約10人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:24:48.704Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc26"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc24"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cc20"
+      }
+    },
+    {
+      "name": "初步設計與技術可行性報告",
+      "tasks": [
+        {
+          "name": "提交初步設計草圖",
+          "metrics": null,
+          "items": [
+            {
+              "name": "各組提交設計草圖",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "提交設計草圖的風險主要在於設計不符合需求，可能需要反覆修改，但通常這種風險是可檢測且可控的。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "設計草圖的提交涉及到的技術複雜度較低，主要挑戰在於協調各組的設計風格和一致性。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "每組需要時間進行設計和內部審核，假設有3-4個小組，每組需要1.5人天的工作量。"
+                },
+                "updated_at": "2025-05-28T08:25:12.076Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc29"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc28"
+          }
+        },
+        {
+          "name": "提交技術可行性報告",
+          "metrics": {
+            "risk": {
+              "number": 3,
+              "reason": "風險主要來自於多個外部API的整合與授權問題，特別是交通局的資料授權可能會影響進度。此外，推播功能與高齡者友善設計也需特別注意。"
+            },
+            "difficulty": {
+              "number": 4,
+              "reason": "技術難度主要在於多模態交通路線規劃、資料爬蟲與排程設計，以及確保系統的即時性與穩定性。前端需支援多平台，後端需處理大量即時資料。"
+            },
+            "story_point": {
+              "number": 8,
+              "reason": "考慮到需要進行多方面的技術調查、API整合測試、資料授權洽談，以及初步設計草圖的製作，預估需要約4人天的工作量。"
+            },
+            "updated_at": "2025-05-28T08:25:20.038Z"
+          },
+          "items": [
+            {
+              "name": "各組提交技術報告",
+              "metrics": {
+                "risk": {
+                  "number": 2,
+                  "reason": "技術報告提交的風險主要在於時間管理和格式要求，可能性較低，影響力中等，可檢測性高。"
+                },
+                "difficulty": {
+                  "number": 2,
+                  "reason": "技術報告的撰寫涉及資料收集和整理，技術複雜度低，但需要一定的協調和編輯能力。"
+                },
+                "story_point": {
+                  "number": 3,
+                  "reason": "假設每組需要1.5人天來完成報告撰寫、編輯和提交，考慮到多組的協作和審核時間。"
+                },
+                "updated_at": "2025-05-28T08:25:22.743Z"
+              },
+              "_id": {
+                "$oid": "6836c872f6bcdf7ab135cc2b"
+              }
+            }
+          ],
+          "_id": {
+            "$oid": "6836c872f6bcdf7ab135cc2a"
+          }
+        }
+      ],
+      "_id": {
+        "$oid": "6836c872f6bcdf7ab135cc27"
+      }
+    }
+  ],
+  "__v": 0
+}]
