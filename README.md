@@ -56,8 +56,10 @@
 
 2. 設定 `.env` 檔案：
    ```
-   OPENAI_API_KEY=your_api_key
-   MONGODB_URI=your_mongo_connection
+   AZURE_OPENAI_ENDPOINT=https://your-resource-name.openai.azure.com/
+   API_KEY=your_azure_openai_key
+   DEPLOYMENT_NAME=your-deployment-id
+   API_VERSION=2024-02-01
    ```
 
 3. 分別啟動前後端伺服器：
