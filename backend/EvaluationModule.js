@@ -1,9 +1,9 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const axios = require('axios');
+const pLimit = require('p-limit'); // 用於控制 API 同時請求數量
 const DecomposedTask = require("./models/DecomposedTask");
 const TaskEvaluation = require('./models/TaskEvaluation');
-const Project = require('./models/Project');
 
 const {
   AZURE_OPENAI_ENDPOINT,
@@ -26,6 +26,7 @@ const SYSTEM_PROMPT = `你是一個資深的項目經理，請根據以下描述
   "story_point":{ "number": number, "reason": string}
 }
 請務必僅回傳有效 JSON，不要包含任何多餘文字或解釋。`;
+
 function extractJson(text) {
   try {
     const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) ||
@@ -40,6 +41,7 @@ function extractJson(text) {
     return null;
   }
 }
+
 async function evaluateTask(taskDescription) {
   if (!taskDescription || typeof taskDescription !== 'string' || taskDescription.trim() === '') {
     console.warn('無效的任務描述，略過評估：', taskDescription);
@@ -91,14 +93,15 @@ async function retryUntilValid(fn, maxRetries = 5, delayMs = 1000) {
   }
   return null;
 }
+
 async function createInitialEvaluationFromDecomposed() {
-  const decomposedStories = await DecomposedTask.find().sort({ createdAt: 1 }); // 抓所有 story
+  const decomposedStories = await DecomposedTask.find().sort({ createdAt: 1 });
   if (!decomposedStories || decomposedStories.length === 0) {
     throw new Error('❌ 找不到任何 DecomposedTask 資料');
   }
 
   const stories = decomposedStories.map(storyDoc => ({
-    name: storyDoc.name, // story 名稱
+    name: storyDoc.name,
     tasks: storyDoc.tasks.map(task => ({
       name: task.name,
       metrics: null,
@@ -110,7 +113,7 @@ async function createInitialEvaluationFromDecomposed() {
   }));
 
   const newEvaluation = new TaskEvaluation({
-    description: '任務初評', // 預設名稱，這裡不再使用 project name
+    description: '任務初評',
     stories,
     feedback: [],
   });
@@ -120,59 +123,59 @@ async function createInitialEvaluationFromDecomposed() {
   return newEvaluation;
 }
 
-
 async function runEvaluationModule() {
-  // MongoDB 連線，放這裡才執行
+  console.time('⏱️ 整體耗時');
   await mongoose.connect(MONGODB_URI);
-  console.log("✅ evaluation成功連線至 MongoDB");
-  await TaskEvaluation.deleteMany({});// 清空 TaskEvaluation 資料表
+  console.log("✅ 成功連線至 MongoDB");
+
+  await TaskEvaluation.deleteMany({});
   const db = mongoose.connection;
   db.on("disconnected", () => console.warn("⚠️ MongoDB 已中斷連線"));
+
   const latestTaskEvaluation = await createInitialEvaluationFromDecomposed();
   const projectDesc = latestTaskEvaluation.description || '';
-  const data = JSON.parse(JSON.stringify(latestTaskEvaluation));
+  const data = latestTaskEvaluation.toObject(); // 避免 JSON.parse(JSON.stringify(...))
 
+  const limit = pLimit(5); // 最多同時跑 5 個 API
 
-  for (const story of data.stories) {
-    for (const task of story.tasks) {
-    const fullTaskName = task.name;
-    console.log(`📝 評估任務：${fullTaskName}`);
+  await Promise.all(data.stories.map(async (story) => {
+    await Promise.all(story.tasks.map(async (task) => {
+      const fullTaskName = task.name;
+      console.log(`📝 評估任務：${fullTaskName}`);
 
-    // 評估 task
-    const taskInput = `${projectDesc} 任務名稱：${fullTaskName}`;
+      // 評估 task 本身
+      const taskInput = `${projectDesc} 任務名稱：${fullTaskName}`;
+      const taskEval = await limit(() =>
+        retryUntilValid(() => evaluateTask(taskInput))
+      );
+      task.metrics = taskEval
+        ? { ...taskEval, updated_at: new Date().toISOString() }
+        : null;
 
-    const taskEvaluation = await retryUntilValid(() => evaluateTask(taskInput));
+      // 評估每個子項目（items）
+      task.items = await Promise.all(task.items.map(item =>
+        limit(async () => {
+          const evaluation = await retryUntilValid(() => evaluateTask(item.name));
+          return {
+            name: item.name,
+            metrics: evaluation
+              ? { ...evaluation, updated_at: new Date().toISOString() }
+              : null,
+          };
+        })
+      ));
+    }));
+  }));
 
-    task.metrics = taskEvaluation
-      ? { ...taskEvaluation, updated_at: new Date().toISOString() }
-      : null;
-
-    // 評估每個 item
-    task.items = await Promise.all(
-      task.items.map(async (item) => {
-        const evaluation = await retryUntilValid(() => evaluateTask(item.name));
-        return {
-          name: item.name,
-          metrics: evaluation
-            ? { ...evaluation, updated_at: new Date().toISOString() }
-            : null,
-        };
-      })
-    );
-  }
-  }
-
-  // 更新資料庫文件
   await TaskEvaluation.findByIdAndUpdate(latestTaskEvaluation._id, data, { new: true });
   console.log('✅ 任務評估完成並更新資料庫');
-  // 執行完關閉連線
+
   await mongoose.connection.close();
   console.log("✅ MongoDB 連線已關閉");
-
+  console.timeEnd('⏱️ 整體耗時');
   return data;
 }
 
-// 防止模組被require時自動執行
 if (require.main === module) {
   runEvaluationModule()
     .catch(err => {
