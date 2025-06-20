@@ -4,11 +4,6 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { exec } = require("child_process");
 
-/*這裡是你的模組函式，要先改成 export 函式形式
-const { runDecomposeModule } = require("./decomposer");
-const { runEvaluationModule } = require("./EvaluationModule");
-const { runAssignModule } = require("./assignTasks");*/
-
 const Project = require("./models/Project");
 const TaskModel = require("./models/DecomposedTask");
 const Assignment = require("./models/Assignment");
@@ -20,13 +15,12 @@ const runadjustment = require("./AiAdj");
 const { runReassign } = require('./reAssign');
 
 const app = express();
-const PORT =3001;
+const PORT = 3001;
 
-//測試用放行
 app.use(cors());
 app.use(express.json());
 
-// MongoDB 連線
+// ✅ MongoDB 連線
 mongoose.connect("mongodb://localhost:27017/taskmanager")
   .then(() => console.log("✅ server成功連線至 MongoDB"))
   .catch((err) => console.error("❌ server MongoDB 連線錯誤：", err));
@@ -34,17 +28,64 @@ mongoose.connect("mongodb://localhost:27017/taskmanager")
 const db = mongoose.connection;
 db.on("disconnected", () => console.warn("⚠️ MongoDB 已中斷連線"));
 
+// ✅ 控制引擎狀態管理
+let isControlEngineDone = false;
+function resetControlEngineStatus() {
+  isControlEngineDone = false;
+}
+function markControlEngineDone() {
+  isControlEngineDone = true;
+}
+function getControlEngineStatus() {
+  return isControlEngineDone;
+}
+const controlEngineStatus = {
+  init: "idle",
+  redecompose: "idle",
+  evaluation: "idle",
+  assignTasks: "idle",
+  all: "idle",
+  error: null
+};
+function updateStatus(stage, status) {
+  if (stage in controlEngineStatus) {
+    controlEngineStatus[stage] = status;
+  } else if (stage === "error") {
+    controlEngineStatus.error = status;
+  } else {
+    console.warn("⚠️ 無效階段：", stage);
+  }
 
-// API：新增專案 ok
+  // ✅ 自動判斷是否完成
+  if (stage === "all" && status === "done") {
+    markControlEngineDone();
+  }
+}
+
+// ✅ 控制引擎階段查詢（合併 done + 階段狀態）
+app.get("/api/control-engine/status", (req, res) => {
+  res.json({
+    done: getControlEngineStatus(),
+    ...controlEngineStatus
+  });
+});
+
+app.post("/api/control-engine/mark-done", (req, res) => {
+  markControlEngineDone();
+  console.log("✅ 控制引擎標記為完成");
+  res.sendStatus(200);
+});
+
+// ✅ 專案建立與控制引擎啟動
 app.post("/api/projects", async (req, res) => {
   try {
+    resetControlEngineStatus();
     await Project.deleteMany({});
-    console.log("📥 收到新專案資料：", req.body ,"舊資料已刪除");
+    console.log("📥 收到新專案資料：", req.body, "舊資料已刪除");
     const project = new Project(req.body);
     await project.save();
     console.log("✅ 專案已儲存至資料庫");
 
-    // 執行控制引擎
     exec("node controlEngine.js", (err, stdout, stderr) => {
       if (err) {
         console.error("❌ 控制引擎執行失敗：", err.message);
@@ -61,25 +102,22 @@ app.post("/api/projects", async (req, res) => {
   }
 });
 
-
-// API：取得最新專案 ok
+// ✅ 專案查詢
 app.get("/api/projects/latest", async (req, res) => {
   try {
     const project = await Project.findOne().sort({ createdAt: -1 });
-    console.log("📤 傳送最新專案：", project?.projectName || "無資料");
     res.json(project);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-//API:員工路由
+// ✅ 員工路由
 app.use('/api/employees', employeeRoutes);
 
-// 特徵分析 API（範例：分析單一員工與任務）
+// ✅ 分析
 const Employee = require('./models/Employee');
 const EmployeeAnalysis = require('./analysis/EmployeeAnalysis');
-const DecomposedTask = require("./models/DecomposedTask");
 const analysis = new EmployeeAnalysis();
 app.post('/api/analyze', async (req, res) => {
   const { employeeId, task } = req.body;
@@ -89,57 +127,49 @@ app.post('/api/analyze', async (req, res) => {
   res.json(result);
 });
 
-// ✅ Collection 資料查詢 API
+// ✅ Collection 查詢
 app.use("/api/data", dataRoutes);
 
-// ✅ [GET] 任務拆解
+// ✅ 拆解任務
 app.get('/api/tasks', async (req, res) => {
   try {
     const task = await TaskModel.findOne();
     res.json(task);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, error: 'Failed to fetch tasks' });
   }
 });
-
-// ✅ [POST] 儲存任務拆解（先清空再插入）
 app.post('/api/tasks', async (req, res) => {
   try {
     await TaskModel.deleteMany();
     const result = await TaskModel.create(req.body);
     res.json({ success: true, insertedId: result._id });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, error: 'Failed to save tasks' });
   }
 });
 
-// ✅ [GET] 員工任務分配
+// ✅ 員工任務分配
 app.get('/api/assignments', async (req, res) => {
   try {
     const result = await Assignment.findOne();
     res.json(result || {});
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, error: 'Failed to load assignments' });
   }
 });
-
-// ✅ [POST] 儲存任務分配（先清空再插入）
 app.post('/api/assignments', async (req, res) => {
   try {
     await Assignment.deleteMany();
     const result = await Assignment.create(req.body);
     res.json({ success: true, insertedId: result._id });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ success: false, error: 'Failed to save assignments' });
   }
 });
 
-//AI調整
-//取的拆分資料
+// ✅ 拆解資料查詢
+const DecomposedTask = require("./models/DecomposedTask");
 app.get("/api/taskdecompose", async (req, res) => {
   try {
     const taskdec = await DecomposedTask.find();
@@ -149,34 +179,18 @@ app.get("/api/taskdecompose", async (req, res) => {
   }
 });
 
-
-// 這裡存當前流程狀態，供輪詢用
-let currentProcessStatus = {
-  stage: null,
-  status: null,
-  updatedAt: null,
-};
-
-function updateCurrentStatus(stage, status) {
-  currentProcessStatus = { stage, status, updatedAt: new Date() };
-}
-
-// 接收調整資料並啟動流程
+// ✅ 啟動 AI 調整流程
 app.post("/api/readjust", async (req, res) => {
   const adjustments = req.body;
-
   if (!Array.isArray(adjustments) || adjustments.length === 0) {
     return res.status(400).json({ message: "調整資料格式錯誤或為空" });
   }
 
   try {
     const result = await Feedback.insertMany(adjustments);
-
-    // 非同步啟動流程
-  runadjustment((stage, status) => {
-      updateCurrentStatus(stage, status);
+    runadjustment((stage, status) => {
+      updateStatus(stage, status);
     });
-
     res.status(200).json({
       message: "調整資料已成功寫入，流程已啟動",
       insertedCount: result.length,
@@ -187,26 +201,33 @@ app.post("/api/readjust", async (req, res) => {
   }
 });
 
+// ✅ 任務重新分配
 app.post("/api/reassign", async (req, res) => {
   const { reason } = req.body;
-
   if (!reason || reason.trim() === "") {
     return res.status(400).json({ error: "原因不可為空" });
   }
 
-  console.log("收到分配原因:", reason);
-
   try {
-    await runReassign({ reason });  // 執行但不回傳結果
-    res.json({ message: "重新分配已完成" });  // 只告知前端已完成
+    resetControlEngineStatus();
+    await runReassign({ reason });
+    res.json({ message: "重新分配已完成" });
   } catch (error) {
     console.error("重新分配錯誤:", error);
     res.status(500).json({ error: "重新分配失敗" });
   }
 });
 
+// ✅ AI調整查詢（合併 done + 階段狀態）
+app.get("/api/reassign/status", (req, res) => {
+  res.json({
+    done: getControlEngineStatus(),
+    ...controlEngineStatus
+  });
+});
 
-// 啟動伺服器
+
+// ✅ 啟動伺服器
 app.listen(PORT, () => {
   console.log(`🚀 伺服器啟動於 http://localhost:${PORT}`);
 });

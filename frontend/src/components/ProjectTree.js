@@ -88,6 +88,59 @@ export default function ProjectTree() {
     setCustomReasonMap((prev) => ({ ...prev, [id]: value }));
   };
 
+  const pollStatus = () => {
+    const interval = setInterval(() => {
+      fetch("http://localhost:3001/api/reassign/status")
+        .then((res) => res.json())
+        .then((statusData) => {
+          if (statusData.error) {
+            setSubmitMessage("送出失敗：" + statusData.error);
+            clearInterval(interval);
+            setTimeout(() => setSubmitMessage(""), 3000);
+            return;
+          }
+            const phaseNameMap = {
+              redecompose: "重新拆分階段",
+              evaluation: "評估階段",
+              assignTasks: "任務指派階段"
+            };
+            const statusTextMap = {
+              idle: "空閒中",
+              running: "執行中",
+              done: "完成",
+              error: "錯誤"
+            };
+          const phases = ["redecompose", "evaluation", "assignTasks"];
+          for (const phase of phases) {
+            const phaseStatus = statusData[phase];
+            const phaseName = phaseNameMap[phase] || phase;
+            if (phaseStatus === "running") {
+              setSubmitMessage(`${phaseName} ${statusTextMap[phaseStatus] || phaseStatus}...`);
+              return;
+            }
+            if (phaseStatus === "error") {
+              setSubmitMessage(`錯誤發生於階段：${phase}`);
+              clearInterval(interval);
+              return;
+            }
+          }
+
+          // 如果所有都完成
+          setSubmitMessage("更新成功！");
+          clearInterval(interval);
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error("Polling error:", err);
+          setSubmitMessage("讀取狀態失敗");
+          clearInterval(interval);
+          setTimeout(() => setSubmitMessage(""), 3000);
+        });
+    }, 900); 
+  };
+
     const handleSubmit = () => {
     try {
         const payload = Object.entries(checkedItems)
@@ -132,30 +185,13 @@ export default function ProjectTree() {
         })
         .then((res) => (res.ok ? res.json() : Promise.reject()))
         .then(() => {
-        setCheckedItems({});
-        setReasonMap({});
-        setCustomReasonMap({});
-        setSubmitMessage("送出成功！");
-
-        setTimeout(() => {
-            setSubmitMessage("專案拆分中...");
-            setTimeout(() => {
-            setSubmitMessage("專案評估中...");
-            setTimeout(() => {
-                setSubmitMessage("專案分配中...");
-                setTimeout(() => {
-                setSubmitMessage("更新成功！");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2500); // 更新成功 → 等 2 秒後刷新
-                }, 2500); // 分配中 → 等 2 秒
-            }, 2500); // 評估中 → 等 2 秒
-            }, 2000); // 拆分中 → 等 1.5 秒
-        }, 1000); // 送出成功 → 等 1 秒
+          setCheckedItems({});
+          setReasonMap({});
+          setCustomReasonMap({});
+          setSubmitMessage("送出成功！");
+          pollStatus();
         })
-
-
-        .catch(() => {
+       .catch(() => {
             setSubmitMessage("送出失敗");
             setTimeout(() => setSubmitMessage(""), 3000);
         });

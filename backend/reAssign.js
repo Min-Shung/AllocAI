@@ -81,7 +81,6 @@ async function connectDB() {
   if (mongoose.connection.readyState === 1) return;
   await mongoose.connect(MONGODB_URI);
   console.log("✅ 成功連線至 MongoDB");
-  await Assignment.deleteMany({});
 }
 
 /**
@@ -91,6 +90,7 @@ async function connectDB() {
 async function runReassign({ reason, projectId = null }) {
   try {
     await connectDB();
+    await Assignment.deleteMany({});
     const employees = await Employee.find().lean();
     const taskEvaluation = projectId
       ? await TaskEvaluation.findById(projectId).lean()

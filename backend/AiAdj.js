@@ -16,7 +16,6 @@ function runScript(scriptPath) {
   });
 }
 
-// 刪掉 finally 裡面關閉連線的部分
 async function runadjustment(updateStatus) {
   try {
     updateStatus("init", "running");

@@ -12,20 +12,6 @@ export default function FeedbackForm() {
     '重新分配': ['分配不均', '員工負擔過重', '忽略人員技能差異', '分配結果重複或衝突', '其他'],
   };
 
-  const handleSubmit = async () => {
-    try {
-      const res = await axios.post('http://localhost:3001/feedback', {
-        action,
-        reason,
-        comment,
-      });
-      setResult(res.data);
-      alert('✅ 意見已成功提交！');
-    } catch (error) {
-      console.error(error);
-      alert('❌ 提交失敗，請稍後再試');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-100 p-6">

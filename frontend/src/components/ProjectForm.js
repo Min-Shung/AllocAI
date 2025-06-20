@@ -1,8 +1,14 @@
+// ProjectForm.jsx
+// 提供使用者填寫專案基本資料、上傳會議記錄，並能夠新增與檢視員工資料。
+// 表單送出後會呼叫後端 API 儲存專案，成功後跳轉至 /collection （看板）頁面。
+
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import EmployeeForm from './EmployeeAnalysis'; 
 import EmployeeList from './EmployeeList';
+import MessageModal from './MessageModal';
+
 
 export default function ProjectForm() {
   const [form, setForm] = useState({
@@ -11,15 +17,18 @@ export default function ProjectForm() {
     startDate: "",
     endDate: "",
     meetingNotes: "",
-  });
+  });// 管理使用者輸入的專案表單內容
+
   const [showEmployeeForm, setShowEmployeeForm] = useState(false);
   const [showEmployeeList, setShowEmployeeList] = useState(false);
+  const [modalMessage, setModalMessage] = useState(null);
 
   const navigate = useNavigate(); 
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // 處理 .txt 或 .md 檔案上傳，將文字內容讀入 form.meetingNotes 欄位
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -32,21 +41,46 @@ export default function ProjectForm() {
     reader.readAsText(file);
   };
 
+// 表單提交事件處理：組合 payload 後送到後端 API 儲存專案資料
+// API URL 為 http://localhost:3001/api/projects
+  const [isProcessing, setIsProcessing] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    resetStatus();  
+    setIsProcessing(true); // 顯示處理中畫面
     const payload = {
       ...form,
       expectedTimeline: `${form.startDate} ~ ${form.endDate}`,
     };
 
     try {
-      await axios.post("http://localhost:3001/api/projects", payload);
-      alert("✅ 專案已提交！");
-      navigate('/collection');
+    await axios.post("http://localhost:3001/api/projects", payload);
+    pollControlEngineStatus(); // 開始輪詢狀態
     } catch (err) {
-      alert("❌ 錯誤：" + err.message);
+      setModalMessage("❌ 發生錯誤：" + err.message);
+      setIsProcessing(false);
     }
   };
+
+  //輪詢函式
+    const pollControlEngineStatus = () => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await axios.get("http://localhost:3001/api/control-engine/status");
+        if (res.data.done) {
+          clearInterval(interval);
+          setModalMessage("處理完成，即將跳轉！");
+          setTimeout(() => navigate("/collection"), 3000);
+        }
+      } catch (err) {
+        console.error("輪詢控制引擎失敗", err.message);
+      }
+    }, 1500); 
+  };
+  function resetStatus() {
+  setIsProcessing(false);
+  setModalMessage(null);
+  }
 
   return (
     <>
@@ -269,6 +303,47 @@ export default function ProjectForm() {
           </div>
         </div>
       )}
+
+      {isProcessing && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+          backgroundColor: "rgba(255,255,255,0.8)",
+          display: "flex", flexDirection: "column",
+          justifyContent: "center", alignItems: "center", zIndex: 2000
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {/* Spinner */}
+            <div style={{
+              width: 20,
+              height: 20,
+              border: "3px solid #444",         // 深灰色主色
+              borderTop: "3px solid transparent",
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite"
+            }}></div>
+
+            <h2 style={{ margin: 0 }}>處理中...</h2>
+          </div>
+          <p style={{ marginTop: 10, color: "#555" }}>請稍候，正在進行任務切割與分配</p>
+
+          <style>
+            {`
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+        </div>
+      )}
+
+
+    {modalMessage && (
+      <MessageModal 
+        message={modalMessage} 
+        onClose={() => setModalMessage(null)} 
+      />
+    )}
     </>
   );
 }

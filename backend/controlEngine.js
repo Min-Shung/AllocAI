@@ -44,7 +44,7 @@ async function main() {
     // 3. 執行任務分配模組（assignTasks.js）
     await runScript("assignTasks.js");
     console.log("🎉 控制引擎執行完畢");
-
+    await axios.post("http://localhost:3001/api/control-engine/mark-done");
   } catch (err) {
     console.error("❌ 控制引擎錯誤：", err);
   } finally {
